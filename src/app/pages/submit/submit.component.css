@@ -1,0 +1,131 @@
+:host { display: block; }
+
+.submit-shell {
+  display: grid;
+  gap: 14px;
+}
+
+/* top bar */
+.top {
+  background: white;
+  border-radius: 20px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-title {
+  font-weight: 900;
+  font-size: 16px;
+}
+
+.top-sub {
+  opacity: 0.7;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.12);
+}
+
+.dot.active {
+  width: 18px;
+  background: rgba(103, 58, 183, 0.45);
+}
+
+/* stage */
+.card-stage {
+  display: grid;
+}
+
+.card {
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+/* card head */
+.card-head {
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.head-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,0.55);
+}
+
+.head-title {
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.head-sub {
+  opacity: 0.75;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.head-count {
+  margin-left: auto;
+  font-weight: 800;
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+/* fields */
+.fields {
+  padding: 0 16px 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.nav {
+  padding: 10px 16px 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.nav-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.skip {
+  opacity: 0.7;
+}
+
+.hint {
+  padding: 0 16px 10px;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+
+/* Pastel themes (match Answers page vibe) */
+.theme-basics { background: #f3efff; }
+.theme-food { background: #fff1e6; }
+.theme-interests { background: #eef7ff; }
+.theme-comfort { background: #effaf4; }
+.theme-style { background: #fff0f5; }
+.theme-random { background: #fffbe8; }

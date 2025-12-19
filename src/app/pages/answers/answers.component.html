@@ -1,0 +1,131 @@
+<div class="page">
+
+  <!-- HERO / SEARCH -->
+  <div class="hero mat-elevation-z2">
+    <div class="hero-top">
+      <div class="hero-title">
+        <mat-icon aria-hidden="true">search</mat-icon>
+        <div>
+          <div class="title">See Answers</div>
+          <div class="subtitle">Click a card to flip and reveal 🎁</div>
+        </div>
+      </div>
+
+      <form class="search" (ngSubmit)="search()">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            [(ngModel)]="name"
+            name="name"
+            placeholder="e.g., Kavya"
+            autocomplete="off"
+          />
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!name || loading"
+        >
+          <mat-icon aria-hidden="true">bolt</mat-icon>
+          Reveal
+        </button>
+      </form>
+    </div>
+
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+    <div *ngIf="notFound" class="status error">
+      <mat-icon aria-hidden="true">error_outline</mat-icon>
+      <span>No answers found for that name.</span>
+    </div>
+  </div>
+
+  <!-- PROFILE HEADER -->
+  <div *ngIf="data" class="profile-head mat-elevation-z2">
+    <div class="avatar">
+      {{ (data.name || '?').slice(0, 1).toUpperCase() }}
+    </div>
+    <div class="head-text">
+      <div class="person">{{ data.name }}</div>
+      <div class="tagline">Secret Santa Profile</div>
+    </div>
+  </div>
+
+  <!-- FLIP CARDS GRID -->
+  <div *ngIf="data" class="grid">
+    <ng-container *ngFor="let s of sections">
+
+      <div
+        *ngIf="sectionHasAny(s.id)"
+        class="flip"
+        [ngClass]="['theme-' + s.id, isFlipped(s.id) ? 'flipped' : '']"
+        (click)="toggleSection(s.id)"
+        role="button"
+        tabindex="0"
+      >
+        <div class="flip-inner">
+
+          <!-- FRONT FACE -->
+          <div class="face front mat-elevation-z2">
+            <div class="front-top">
+              <div class="front-title">
+                <mat-icon aria-hidden="true">{{ s.icon }}</mat-icon>
+                <div class="front-text">
+                  <div class="front-name">{{ s.title }}</div>
+                  <div class="front-sub">Tap to reveal</div>
+                </div>
+              </div>
+
+              <div class="chip">
+                {{ filledCount(s.id) }}
+              </div>
+            </div>
+
+            <div class="front-hint">
+              <span class="hint-dot"></span>
+              <span>Flip for details</span>
+            </div>
+          </div>
+
+          <!-- BACK FACE -->
+          <div class="face back mat-elevation-z3">
+            <div class="back-head">
+              <div class="back-title">
+                <mat-icon aria-hidden="true">{{ s.icon }}</mat-icon>
+                <span>{{ s.title }}</span>
+              </div>
+
+              <div class="back-close">
+                <mat-icon aria-hidden="true">flip</mat-icon>
+              </div>
+            </div>
+
+            <!-- THIS wrapper makes back readable + allows scrolling if needed -->
+            <div class="back-sheet">
+              <div class="back-body">
+                <div class="kvlist">
+                  <ng-container *ngFor="let f of s.fields">
+                    <div class="row" *ngIf="data[f.key]">
+                      <div class="label">{{ f.label }}</div>
+                      <div class="value">{{ data[f.key] }}</div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <div class="back-footer">
+              Tap again to flip back
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </ng-container>
+  </div>
+</div>
+<app-footer></app-footer>

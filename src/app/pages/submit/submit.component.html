@@ -1,0 +1,261 @@
+<div class="submit-shell">
+
+  <!-- Top header -->
+  <div class="top mat-elevation-z2">
+    <div class="top-left">
+      <div class="top-title">Secret Santa Preferences 🎁</div>
+      <div class="top-sub">Next unlocks at ~90% complete</div>
+    </div>
+
+    <div class="dots" aria-hidden="true">
+      <span
+        class="dot"
+        *ngFor="let s of steps; let i = index"
+        [class.active]="i === stepIndex"
+      ></span>
+    </div>
+  </div>
+
+  <!-- Card Carousel Area -->
+  <div
+    class="card-stage"
+    (touchstart)="onTouchStart($event)"
+    (touchend)="onTouchEnd($event)"
+  >
+    <mat-card class="card mat-elevation-z3" [ngClass]="currentStep.themeClass">
+
+      <div class="card-head">
+        <div class="head-icon">
+          <mat-icon aria-hidden="true">{{ currentStep.icon }}</mat-icon>
+        </div>
+
+        <div class="head-text">
+          <div class="head-title">{{ currentStep.title }}</div>
+          <div class="head-sub">{{ currentStep.subtitle }}</div>
+        </div>
+
+        <div class="head-count">
+          {{ stepIndex + 1 }}/{{ steps.length }}
+        </div>
+      </div>
+
+      <form [formGroup]="form" class="fields">
+
+        <!-- BASICS -->
+        <ng-container *ngIf="currentStep.id === 'basics'">
+          <mat-form-field appearance="outline">
+            <mat-label>Name / Nickname *</mat-label>
+            <input matInput formControlName="name" placeholder="e.g., Kavya" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Birthday / Zodiac</mat-label>
+            <input matInput formControlName="birthday" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite color</mat-label>
+            <input matInput formControlName="favoriteColor" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite snack</mat-label>
+            <input matInput formControlName="favoriteSnack" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite drink</mat-label>
+            <input matInput formControlName="favoriteDrink" />
+          </mat-form-field>
+        </ng-container>
+
+        <!-- FOOD -->
+        <ng-container *ngIf="currentStep.id === 'food'">
+          <mat-form-field appearance="outline">
+            <mat-label>Sweet or salty?</mat-label>
+            <input matInput formControlName="sweetOrSalty" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite candy</mat-label>
+            <input matInput formControlName="favoriteCandy" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite dessert</mat-label>
+            <input matInput formControlName="favoriteDessert" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite fast food</mat-label>
+            <input matInput formControlName="favoriteFastFood" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Allergies / dislikes</mat-label>
+            <textarea matInput rows="2" formControlName="foodAllergies"></textarea>
+          </mat-form-field>
+        </ng-container>
+
+        <!-- INTERESTS -->
+        <ng-container *ngIf="currentStep.id === 'interests'">
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite movie / genre</mat-label>
+            <input matInput formControlName="favoriteMovie" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite TV show</mat-label>
+            <input matInput formControlName="favoriteTV" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite music</mat-label>
+            <input matInput formControlName="favoriteMusic" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Hobbies</mat-label>
+            <textarea matInput rows="2" formControlName="hobbies"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Obsessed with lately</mat-label>
+            <textarea matInput rows="2" formControlName="obsession"></textarea>
+          </mat-form-field>
+        </ng-container>
+
+        <!-- COMFORT -->
+        <ng-container *ngIf="currentStep.id === 'comfort'">
+          <mat-form-field appearance="outline">
+            <mat-label>Cozy night in or going out?</mat-label>
+            <input matInput formControlName="cozyOrOut" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Coffee or tea?</mat-label>
+            <input matInput formControlName="coffeeOrTea" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Morning person or night owl?</mat-label>
+            <input matInput formControlName="morningOrNight" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite scent</mat-label>
+            <input matInput formControlName="favoriteScent" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite season</mat-label>
+            <input matInput formControlName="favoriteSeason" />
+          </mat-form-field>
+        </ng-container>
+
+        <!-- STYLE -->
+        <ng-container *ngIf="currentStep.id === 'style'">
+          <mat-form-field appearance="outline">
+            <mat-label>Go-to outfit</mat-label>
+            <input matInput formControlName="goToOutfit" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite accessory</mat-label>
+            <input matInput formControlName="favoriteAccessory" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite store / brand</mat-label>
+            <input matInput formControlName="favoriteStore" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Casual or dressy?</mat-label>
+            <input matInput formControlName="casualOrDressy" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite emoji</mat-label>
+            <input matInput formControlName="favoriteEmoji" />
+          </mat-form-field>
+        </ng-container>
+
+        <!-- RANDOM -->
+        <ng-container *ngIf="currentStep.id === 'random'">
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite animal</mat-label>
+            <input matInput formControlName="favoriteAnimal" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Favorite quote</mat-label>
+            <input matInput formControlName="favoriteQuote" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>A small thing that makes you happy</mat-label>
+            <textarea matInput rows="2" formControlName="smallJoy"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Something you always need more of</mat-label>
+            <input matInput formControlName="needMoreOf" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Dream gift</mat-label>
+            <textarea matInput rows="2" formControlName="dreamGift"></textarea>
+          </mat-form-field>
+        </ng-container>
+
+      </form>
+
+      <!-- Progress helper -->
+      <div class="hint">
+         {{ filledCount(currentStep.keys) }}/{{ totalCount(currentStep.keys) }} answered
+         <span *ngIf="!canGoNext()">
+          — answer {{ requiredCount(currentStep.keys) - filledCount(currentStep.keys) }} more to continue
+            </span>
+        </div>
+
+
+      <!-- Nav -->
+      <div class="nav">
+        <button mat-stroked-button type="button" (click)="back()" [disabled]="stepIndex === 0 || loading">
+          <mat-icon>arrow_back</mat-icon>
+          Back
+        </button>
+
+        <div class="nav-right">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="next()"
+            *ngIf="stepIndex < steps.length - 1"
+            [disabled]="!canGoNext() || loading"
+          >
+            Next
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="save()"
+            *ngIf="stepIndex === steps.length - 1"
+            [disabled]="!canGoNext() || loading"
+          >
+            {{ loading ? 'Saving…' : 'Save 💾' }}
+          </button>
+        </div>
+      </div>
+
+    </mat-card>
+  </div>
+
+  
+</div>
+<app-footer></app-footer>
