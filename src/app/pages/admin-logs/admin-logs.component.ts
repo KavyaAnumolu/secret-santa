@@ -2,39 +2,37 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Firestore, collection, query, orderBy, limit, onSnapshot } from '@angular/fire/firestore';
 
 type ViewLog = {
-  viewerEmail: string | null;
-  viewerUid: string;
-  profileName: string;
-  createdAt?: any; // Firestore timestamp
+  viewerEmail?: string;
+  viewerUid?: string;
+  viewedName?: string;
+  createdAt?: any; // Firestore Timestamp
 };
 
 @Component({
   selector: 'app-admin-logs',
   templateUrl: './admin-logs.component.html',
-  styleUrls: ['./admin-logs.component.css'],
+  styleUrls: ['./admin-logs.component.css']
 })
 export class AdminLogsComponent implements OnInit, OnDestroy {
-  logs: ViewLog[] = [];
   loading = true;
-  private unsub?: () => void;
+  logs: (ViewLog & { id: string })[] = [];
+
+  private unsub: (() => void) | null = null;
 
   constructor(private firestore: Firestore) {}
 
   ngOnInit(): void {
-    const q = query(
-      collection(this.firestore, 'viewLogs'),
-      orderBy('createdAt', 'desc'),
-      limit(200)
-    );
+    const ref = collection(this.firestore, 'viewLogs');
+    const q = query(ref, orderBy('createdAt', 'desc'), limit(200));
 
     this.unsub = onSnapshot(
       q,
       (snap) => {
-        this.logs = snap.docs.map((d) => d.data() as ViewLog);
+        this.logs = snap.docs.map(d => ({ id: d.id, ...(d.data() as ViewLog) }));
         this.loading = false;
       },
       (err) => {
-        console.error(err);
+        console.error('Failed to load logs', err);
         this.loading = false;
       }
     );
@@ -46,10 +44,17 @@ export class AdminLogsComponent implements OnInit, OnDestroy {
 
   formatTime(ts: any): string {
     try {
-      const date = ts?.toDate ? ts.toDate() : null;
-      return date ? date.toLocaleString() : '';
+      // Firestore Timestamp -> Date
+      const d: Date = ts?.toDate ? ts.toDate() : new Date(ts);
+      return d.toLocaleString();
     } catch {
       return '';
     }
+  }
+
+  rowTitle(l: ViewLog): string {
+    const who = (l.viewerEmail || 'Unknown user').toString();
+    const whom = (l.viewedName || 'Unknown profile').toString();
+    return `${who} revealed ${whom}`;
   }
 }

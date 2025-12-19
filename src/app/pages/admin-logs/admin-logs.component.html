@@ -1,34 +1,43 @@
-<div class="admin-page">
-  <mat-card class="hero mat-elevation-z2">
-    <div class="title">Admin — View Logs</div>
-    <div class="subtitle">Only you can see who revealed which profile.</div>
-  </mat-card>
-
-  <mat-card class="panel mat-elevation-z2" *ngIf="loading">
-    Loading logs…
-  </mat-card>
-
-  <div class="list" *ngIf="!loading">
-    <mat-card class="log mat-elevation-z1" *ngFor="let l of logs">
-      <div class="row">
-        <div class="left">
-          <div class="who">
-            {{ l.viewerEmail || l.viewerUid }}
-          </div>
-          <div class="what">
-            Revealed: <span class="name">{{ l.profileName }}</span>
-          </div>
-        </div>
-        <div class="time">
-          {{ formatTime(l.createdAt) }}
-        </div>
+<div class="page">
+  <mat-card class="panel mat-elevation-z2">
+    <div class="head">
+      <div class="title">
+        <mat-icon>receipt_long</mat-icon>
+        Admin Logs
       </div>
-    </mat-card>
+      <div class="sub">Who revealed which profile</div>
+    </div>
 
-    <mat-card class="panel mat-elevation-z1" *ngIf="logs.length === 0">
-      No logs yet.
-    </mat-card>
-  </div>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
 
-  <app-footer></app-footer>
+    <div class="list" *ngIf="!loading">
+      <mat-card class="log mat-elevation-z1" *ngFor="let l of logs">
+        <div class="line1">{{ rowTitle(l) }}</div>
+
+        <div class="meta">
+          <span class="pill">
+            <mat-icon>schedule</mat-icon>
+            {{ formatTime(l.createdAt) }}
+          </span>
+
+          <span class="pill" *ngIf="l.viewerUid">
+            <mat-icon>person</mat-icon>
+            UID: {{ l.viewerUid }}
+          </span>
+        </div>
+
+        <!-- Explicit fields (helps debugging if something is missing) -->
+        <div class="debug">
+          <div><b>viewerEmail:</b> {{ l.viewerEmail || '—' }}</div>
+          <div><b>viewedName:</b> {{ l.viewedName || '—' }}</div>
+        </div>
+      </mat-card>
+
+      <mat-card class="empty mat-elevation-z1" *ngIf="logs.length === 0">
+        No logs yet.
+      </mat-card>
+    </div>
+  </mat-card>
 </div>
+
+<app-footer></app-footer>
