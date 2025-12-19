@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { signOut } from '@angular/fire/auth';
+
 import {
   Auth,
   GoogleAuthProvider,
@@ -78,6 +80,6 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
-    await this.auth.signOut();
-  }
+  await signOut(this.auth);
+}
 }
