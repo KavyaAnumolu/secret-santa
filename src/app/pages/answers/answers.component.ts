@@ -75,7 +75,7 @@ export class AnswersComponent {
       title: 'Comfort & Vibes',
       icon: 'self_improvement',
       fields: [
-        { label: 'Cozy or out', key: 'cozyOrOut' },
+        { label: 'Cozy Night In or out', key: 'cozyOrOut' },
         { label: 'Coffee or tea', key: 'coffeeOrTea' },
         { label: 'Morning or night', key: 'morningOrNight' },
         { label: 'Scent', key: 'favoriteScent' },

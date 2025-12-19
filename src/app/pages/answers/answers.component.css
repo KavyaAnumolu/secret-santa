@@ -155,6 +155,86 @@
 
 .back-footer { opacity:0.65; font-size:12px; padding:0 2px 2px; }
 
+/* Make inner scrolling behave correctly on iOS */
+.back-body {
+  -webkit-overflow-scrolling: touch;  /* smooth scrolling on iPhone */
+  overscroll-behavior: contain;       /* prevent page from stealing scroll */
+  touch-action: pan-y;                /* allow vertical scroll inside */
+}
+
+/* Prevent weird "rubber band" scroll chaining */
+.back-sheet {
+  overscroll-behavior: contain;
+}
+
+/* Optional: always show a subtle scroll hint gradient at bottom */
+.back-sheet::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 40px; /* above footer area */
+  height: 30px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.85));
+}
+
+.back-sheet {
+  position: relative; /* needed for ::after */
+}
+
+/* ✅ FORCE profile header to stay left-aligned (mobile + desktop) */
+.profile-head {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
+
+  padding: 14px 16px !important;
+  border-radius: 22px;
+}
+
+.profile-head .avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 56px;          /* don’t shrink */
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.profile-head .head-text {
+  min-width: 0;
+  text-align: left !important;
+}
+
+.profile-head .person {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.15;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-head .tagline {
+  margin-top: 2px;
+  font-size: 13px;
+  opacity: 0.65;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
 /* pastel themes on BOTH sides */
 .flip.theme-basics .front, .flip.theme-basics .back { background: #f3efff !important; }
 .flip.theme-food .front, .flip.theme-food .back { background: #fff1e6 !important; }

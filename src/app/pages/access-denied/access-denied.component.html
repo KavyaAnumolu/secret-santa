@@ -1,0 +1,21 @@
+<div class="wrap">
+  <mat-card class="card mat-elevation-z3">
+    <div class="icon">
+      <mat-icon>lock</mat-icon>
+    </div>
+
+    <div class="title">Access Denied</div>
+    <div class="subtitle">
+      This Secret Santa app is private. Your Google account is not on the invite list.
+    </div>
+
+    <button mat-raised-button color="primary" (click)="signOut()">
+      <mat-icon>logout</mat-icon>
+      Sign out
+    </button>
+
+    <div class="fineprint">
+     <app-footer></app-footer>
+    </div>
+  </mat-card>
+</div>

@@ -1,46 +1,42 @@
 import { Injectable } from '@angular/core';
-import { Firestore, doc, setDoc } from '@angular/fire/firestore';
-import { collection, getDocs, getDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  addDoc,
+  serverTimestamp
+} from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
 
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ParticipantsService {
+  constructor(private firestore: Firestore, private auth: Auth) {}
 
-  constructor(private firestore: Firestore) {}
+  // Save answers for a person (docId = lowercase name)
+  async saveParticipant(name: string, data: any): Promise<void> {
+    const id = name.trim().toLowerCase();
+    await setDoc(doc(this.firestore, 'participants', id), { ...data, name }, { merge: true });
+  }
 
-  async saveParticipant(name: string, data: any) {
-    // use name as document id (lowercase, no spaces)
-    const id = name.trim().toLowerCase().replace(/\s+/g, '-');
+  // Load answers by name
+  async getParticipantByName(name: string): Promise<any | null> {
+    const id = name.trim().toLowerCase();
+    const snap = await getDoc(doc(this.firestore, 'participants', id));
+    return snap.exists() ? snap.data() : null;
+  }
 
-    const ref = doc(this.firestore, 'participants', id);
+  // Log that current signed-in user revealed a profile
+  async logView(profileName: string): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) return;
 
-    await setDoc(ref, {
-      ...data,
-      updatedAt: new Date()
+    await addDoc(collection(this.firestore, 'viewLogs'), {
+      viewerUid: user.uid,
+      viewerEmail: user.email ?? null,
+      profileName,
+      createdAt: serverTimestamp(),
     });
   }
-  async getParticipantByName(name: string) {
-  const id = name.trim().toLowerCase().replace(/\s+/g, '-');
-  const ref = doc(this.firestore, 'participants', id);
-
-  const snap = await getDoc(ref);
-  return snap.exists() ? snap.data() : null;
-}
-
-async listParticipantNames(): Promise<string[]> {
-  const ref = collection(this.firestore, 'participants');
-  const snaps = await getDocs(ref);
-
-  const names: string[] = [];
-  snaps.forEach((d) => {
-    const data: any = d.data();
-    if (data?.name) names.push(data.name);
-  });
-
-  // sort alphabetically
-  return names.sort((a, b) => a.localeCompare(b));
-}
-
 }

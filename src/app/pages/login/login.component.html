@@ -1,0 +1,17 @@
+<div class="login-wrap">
+  <mat-card class="login-card mat-elevation-z3">
+    <div class="title">Welcome 🎁</div>
+    <div class="subtitle">
+      Please sign in with Google to submit and view Secret Santa answers.
+    </div>
+
+    <button mat-raised-button color="primary" (click)="signIn()" [disabled]="loading">
+      <mat-icon>login</mat-icon>
+      {{ loading ? 'Signing in…' : 'Sign in with Google' }}
+    </button>
+
+    <div class="fineprint">
+     <app-footer></app-footer>
+    </div>
+  </mat-card>
+</div>

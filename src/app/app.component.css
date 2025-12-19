@@ -1,10 +1,51 @@
-.page {
-  max-width: 900px;
-  margin: 24px auto;
-  padding: 0 16px;
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.active-link {
-  font-weight: 700;
+.brand {
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.nav a.active {
   text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+/* IMPORTANT: do NOT force app-wide max-width/padding here */
+.app-shell {
+  padding: 0;          /* let each page control its own spacing */
+  margin: 0;
+}
+
+/* Desktop links show */
+.desktop {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Mobile hamburger hidden on desktop */
+.mobile {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .desktop {
+    display: none;     /* hide congested links */
+  }
+  .mobile {
+    display: inline-flex;
+  }
+  .brand {
+    font-size: 20px;
+  }
 }

@@ -1,0 +1,34 @@
+<div class="admin-page">
+  <mat-card class="hero mat-elevation-z2">
+    <div class="title">Admin — View Logs</div>
+    <div class="subtitle">Only you can see who revealed which profile.</div>
+  </mat-card>
+
+  <mat-card class="panel mat-elevation-z2" *ngIf="loading">
+    Loading logs…
+  </mat-card>
+
+  <div class="list" *ngIf="!loading">
+    <mat-card class="log mat-elevation-z1" *ngFor="let l of logs">
+      <div class="row">
+        <div class="left">
+          <div class="who">
+            {{ l.viewerEmail || l.viewerUid }}
+          </div>
+          <div class="what">
+            Revealed: <span class="name">{{ l.profileName }}</span>
+          </div>
+        </div>
+        <div class="time">
+          {{ formatTime(l.createdAt) }}
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="panel mat-elevation-z1" *ngIf="logs.length === 0">
+      No logs yet.
+    </mat-card>
+  </div>
+
+  <app-footer></app-footer>
+</div>

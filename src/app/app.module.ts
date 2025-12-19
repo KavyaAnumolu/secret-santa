@@ -12,6 +12,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 import { MatDividerModule } from '@angular/material/divider';
@@ -21,11 +22,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { FooterComponent } from './shared/footer/footer.component';
-
-
-
-
-
+import { LoginComponent } from './pages/login/login.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { AdminLogsComponent } from './pages/admin-logs/admin-logs.component';
+import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
 
 
 @NgModule({
@@ -33,11 +33,15 @@ import { FooterComponent } from './shared/footer/footer.component';
     AppComponent,
     SubmitComponent,
     AnswersComponent,
-    FooterComponent
+    FooterComponent,
+    LoginComponent,
+    AdminLogsComponent,
+    AccessDeniedComponent
   ],
   imports: [
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
+   provideFirebaseApp(() => initializeApp(environment.firebase)),
+   provideAuth(() => getAuth()),
+   provideFirestore(() => getFirestore()),
     BrowserModule,
     AppRoutingModule,
     MatToolbarModule,
@@ -48,6 +52,7 @@ import { FooterComponent } from './shared/footer/footer.component';
     MatInputModule,
     MatDividerModule,
     ReactiveFormsModule,
+    MatMenuModule,
     FormsModule,
     MatIconModule,
     MatProgressBarModule,

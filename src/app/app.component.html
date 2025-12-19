@@ -1,11 +1,51 @@
-<mat-toolbar color="primary" class="mat-elevation-z2">
-  <span style="font-weight: 700;">Secret Santa</span>
-  <span style="flex: 1 1 auto;"></span>
+<mat-toolbar color="primary" class="toolbar mat-elevation-z2">
+  <div class="brand" (click)="goHome()" role="button" tabindex="0">
+    Secret Santa
+  </div>
 
-  <a mat-button routerLink="/submit" routerLinkActive="active-link">Submit Answers</a>
-  <a mat-button routerLink="/answers" routerLinkActive="active-link">See Answers</a>
+  <span class="spacer"></span>
+
+  <!-- Desktop links (only if logged in) -->
+  <ng-container *ngIf="auth.user$ | async as user; else loggedOut">
+    <nav class="nav desktop">
+      <a mat-button routerLink="/submit" routerLinkActive="active">Submit</a>
+      <a mat-button routerLink="/answers" routerLinkActive="active">Answers</a>
+    </nav>
+
+    <!-- Mobile menu -->
+    <button mat-icon-button class="mobile" [matMenuTriggerFor]="menu" aria-label="Open menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/submit">
+        <mat-icon>edit</mat-icon>
+        <span>Submit Answers</span>
+      </button>
+      <button mat-menu-item routerLink="/answers">
+        <mat-icon>search</mat-icon>
+        <span>See Answers</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign out</span>
+      </button>
+    </mat-menu>
+
+    <!-- Desktop sign out -->
+    <button mat-stroked-button class="desktop" (click)="logout()">
+      Sign out
+    </button>
+  </ng-container>
+
+  <ng-template #loggedOut>
+    <button mat-raised-button color="accent" (click)="login()">
+      <mat-icon>login</mat-icon>
+      Sign in
+    </button>
+  </ng-template>
 </mat-toolbar>
 
-<div class="page">
+<div class="app-shell">
   <router-outlet></router-outlet>
 </div>
