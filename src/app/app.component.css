@@ -49,3 +49,76 @@
     font-size: 20px;
   }
 }
+
+.who {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.9;
+  margin-right: 10px;
+  max-width: 240px;
+}
+
+.who .email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+/* Prevent any horizontal scroll caused by toolbar content */
+.toolbar {
+  overflow-x: hidden;
+}
+
+/* Signed-in user display (desktop only) */
+.who-block {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.9;
+  margin-right: 10px;
+  max-width: 260px;
+}
+
+.who-block .email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+/* Menu "Signed in as" header */
+.menu-user {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px 10px 14px;
+}
+
+.menu-user-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.menu-user-title {
+  font-weight: 900;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.menu-user-email {
+  font-size: 12px;
+  opacity: 0.7;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Mobile: hide the signed-in email block on the toolbar */
+@media (max-width: 600px) {
+  .who-block {
+    display: none !important;
+  }
+}

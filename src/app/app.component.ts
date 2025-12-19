@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
+import { environment } from '../environments/environment';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -9,13 +10,16 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  constructor(public auth: AuthService, private router: Router) {
-    this.auth.user$.subscribe(u => console.log('SIGNED IN AS:', u?.email, 'UID:', u?.uid));
+  constructor(public auth: AuthService, private router: Router) {}
 
+  isAdmin(uid: string | undefined | null): boolean {
+    return !!uid && uid === environment.adminUid;
   }
 
   async login() {
     await this.auth.loginWithGoogle();
+    // after login, go to submit
+    await this.router.navigateByUrl('/submit');
   }
 
   async logout() {

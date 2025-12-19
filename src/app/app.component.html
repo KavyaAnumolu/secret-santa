@@ -5,12 +5,25 @@
 
   <span class="spacer"></span>
 
-  <!-- Desktop links (only if logged in) -->
   <ng-container *ngIf="auth.user$ | async as user; else loggedOut">
+    <!-- Desktop nav -->
     <nav class="nav desktop">
       <a mat-button routerLink="/submit" routerLinkActive="active">Submit</a>
       <a mat-button routerLink="/answers" routerLinkActive="active">Answers</a>
+      <a mat-button routerLink="/admin-logs" routerLinkActive="active" *ngIf="isAdmin(user.uid)">Logs</a>
     </nav>
+
+    <!-- Signed-in indicator -->
+    <div class="who who-block" title="{{ user.email || '' }}">
+  <mat-icon aria-hidden="true">person</mat-icon>
+  <span class="email">{{ user.email || 'Signed in' }}</span>
+</div>
+
+
+    <!-- Desktop sign out -->
+    <button mat-stroked-button class="desktop" (click)="logout()">
+      Sign out
+    </button>
 
     <!-- Mobile menu -->
     <button mat-icon-button class="mobile" [matMenuTriggerFor]="menu" aria-label="Open menu">
@@ -18,6 +31,15 @@
     </button>
 
     <mat-menu #menu="matMenu">
+      <div class="menu-user">
+  <mat-icon aria-hidden="true">person</mat-icon>
+  <div class="menu-user-text">
+    <div class="menu-user-title">Signed in</div>
+    <div class="menu-user-email">{{ user.email || '' }}</div>
+  </div>
+</div>
+<mat-divider></mat-divider>
+
       <button mat-menu-item routerLink="/submit">
         <mat-icon>edit</mat-icon>
         <span>Submit Answers</span>
@@ -26,16 +48,15 @@
         <mat-icon>search</mat-icon>
         <span>See Answers</span>
       </button>
+      <button mat-menu-item routerLink="/admin-logs" *ngIf="isAdmin(user.uid)">
+        <mat-icon>analytics</mat-icon>
+        <span>View Logs</span>
+      </button>
       <button mat-menu-item (click)="logout()">
         <mat-icon>logout</mat-icon>
         <span>Sign out</span>
       </button>
     </mat-menu>
-
-    <!-- Desktop sign out -->
-    <button mat-stroked-button class="desktop" (click)="logout()">
-      Sign out
-    </button>
   </ng-container>
 
   <ng-template #loggedOut>
@@ -46,6 +67,4 @@
   </ng-template>
 </mat-toolbar>
 
-<div class="app-shell">
-  <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>

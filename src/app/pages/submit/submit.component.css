@@ -5,31 +5,55 @@
   gap: 14px;
 }
 
-/* top bar */
+/* =========================
+   TOP HEADER (FULL-WIDTH PROGRESS)
+   ========================= */
 .top {
   background: white;
   border-radius: 20px;
-  padding: 14px 16px;
+  padding: 14px 16px 12px;
+  display: grid;
+  gap: 12px;
+}
+
+/* Title row */
+.top-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .top-title {
   font-weight: 900;
   font-size: 16px;
+  line-height: 1.2;
 }
 
-.top-sub {
-  opacity: 0.7;
+/* small meta text under title */
+.top-meta {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 12px;
-  margin-top: 2px;
+  opacity: 0.75;
+}
+
+.top-meta .pct {
+  font-weight: 900;
+  opacity: 0.9;
+}
+
+.top-meta .sep {
+  opacity: 0.5;
 }
 
 .dots {
   display: flex;
   gap: 6px;
   align-items: center;
+  padding-top: 2px;
 }
 
 .dot {
@@ -37,14 +61,36 @@
   height: 8px;
   border-radius: 999px;
   background: rgba(0,0,0,0.12);
+  transition: transform 180ms ease, opacity 180ms ease;
+  opacity: 0.6;
 }
 
 .dot.active {
   width: 18px;
+  opacity: 1;
   background: rgba(103, 58, 183, 0.45);
+  transform: scale(1.05);
 }
 
-/* stage */
+/* Full-width progress bar row */
+.progress-wrap {
+  width: 100%;
+}
+
+/* Make progress bar thicker + rounded */
+.progress-wrap ::ng-deep .mat-mdc-progress-bar {
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-wrap ::ng-deep .mdc-linear-progress__bar-inner {
+  border-radius: 999px;
+}
+
+/* =========================
+   STAGE / CARD
+   ========================= */
 .card-stage {
   display: grid;
 }
@@ -54,7 +100,7 @@
   overflow: hidden;
 }
 
-/* card head */
+/* Card head */
 .card-head {
   padding: 14px 16px;
   display: flex;
@@ -90,13 +136,20 @@
   font-size: 12px;
 }
 
-/* fields */
+/* Fields */
 .fields {
   padding: 0 16px 16px;
   display: grid;
   gap: 12px;
 }
 
+.hint {
+  padding: 0 16px 10px;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* Nav */
 .nav {
   padding: 10px 16px 16px;
   display: flex;
@@ -115,17 +168,29 @@
   opacity: 0.7;
 }
 
-.hint {
-  padding: 0 16px 10px;
-  font-size: 12px;
-  opacity: 0.75;
+/* Keep form labels always visible (if you still want this behavior) */
+::ng-deep mat-form-field {
+  --mat-form-field-floating-label-transform: translateY(-1.2em) scale(0.75);
+}
+::ng-deep mat-form-field.mat-form-field-appearance-outline .mat-form-field-label {
+  transform: translateY(-1.2em) scale(0.75);
 }
 
-
-/* Pastel themes (match Answers page vibe) */
+/* =========================
+   PASTEL THEMES
+   ========================= */
 .theme-basics { background: #f3efff; }
 .theme-food { background: #fff1e6; }
 .theme-interests { background: #eef7ff; }
 .theme-comfort { background: #effaf4; }
 .theme-style { background: #fff0f5; }
 .theme-random { background: #fffbe8; }
+
+/* =========================
+   MOBILE POLISH
+   ========================= */
+@media (max-width: 420px) {
+  .top-title { font-size: 15px; }
+  .head-title { font-size: 17px; }
+  .progress-wrap ::ng-deep .mat-mdc-progress-bar { height: 9px; }
+}

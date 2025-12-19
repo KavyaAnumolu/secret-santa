@@ -1,49 +1,33 @@
 import { Component } from '@angular/core';
 import { ParticipantsService } from '../../services/participants.service';
 
-type SectionKey =
-  | 'basics'
-  | 'food'
-  | 'interests'
-  | 'comfort'
-  | 'style'
-  | 'random';
-
-type Field = { label: string; key: string };
-
 @Component({
   selector: 'app-answers',
   templateUrl: './answers.component.html',
-  styleUrls: ['./answers.component.css'],
+  styleUrls: ['./answers.component.css']
 })
 export class AnswersComponent {
   name = '';
-  data: any = null;
   loading = false;
   notFound = false;
 
-  /** MULTI-OPEN FLIP CARDS */
-  openSections = new Set<SectionKey>();
+  data: any | null = null;
 
-  /** SOFT FLIP SOUND */
-  private audioCtx: AudioContext | null = null;
+  flipped: Record<string, boolean> = {};
 
-  /** SECTIONS USED BY THE TEMPLATE */
-  sections: {
-    id: SectionKey;
-    title: string;
-    icon: string;
-    fields: Field[];
-  }[] = [
+  // ✅ sound (local asset). Put file in: src/assets/sounds/flip.mp3
+  private flipAudio = new Audio('assets/flipping.mp3');
+
+  sections = [
     {
       id: 'basics',
       title: 'Basics',
       icon: 'person_outline',
       fields: [
-        { label: 'Birthday / Zodiac', key: 'birthday' },
-        { label: 'Favorite color', key: 'favoriteColor' },
-        { label: 'Favorite snack', key: 'favoriteSnack' },
-        { label: 'Favorite drink', key: 'favoriteDrink' },
+        { key: 'birthday', label: 'Birthday / Zodiac' },
+        { key: 'favoriteColor', label: 'Favorite color' },
+        { key: 'favoriteSnack', label: 'Favorite snack' },
+        { key: 'favoriteDrink', label: 'Favorite drink' },
       ],
     },
     {
@@ -51,11 +35,11 @@ export class AnswersComponent {
       title: 'Food & Treats',
       icon: 'restaurant_menu',
       fields: [
-        { label: 'Sweet or salty', key: 'sweetOrSalty' },
-        { label: 'Candy', key: 'favoriteCandy' },
-        { label: 'Dessert', key: 'favoriteDessert' },
-        { label: 'Fast food', key: 'favoriteFastFood' },
-        { label: 'Allergies / dislikes', key: 'foodAllergies' },
+        { key: 'sweetOrSalty', label: 'Sweet or salty?' },
+        { key: 'favoriteCandy', label: 'Favorite candy' },
+        { key: 'favoriteDessert', label: 'Favorite dessert' },
+        { key: 'favoriteFastFood', label: 'Favorite fast food' },
+        { key: 'foodAllergies', label: 'Allergies / dislikes' },
       ],
     },
     {
@@ -63,11 +47,11 @@ export class AnswersComponent {
       title: 'Fun & Interests',
       icon: 'interests',
       fields: [
-        { label: 'Movies', key: 'favoriteMovie' },
-        { label: 'TV Show', key: 'favoriteTV' },
-        { label: 'Music', key: 'favoriteMusic' },
-        { label: 'Hobbies', key: 'hobbies' },
-        { label: 'Obsessed with', key: 'obsession' },
+        { key: 'favoriteMovie', label: 'Favorite movie / genre' },
+        { key: 'favoriteTV', label: 'Favorite TV show' },
+        { key: 'favoriteMusic', label: 'Favorite music' },
+        { key: 'hobbies', label: 'Hobbies' },
+        { key: 'obsession', label: 'Obsessed with lately' },
       ],
     },
     {
@@ -75,11 +59,11 @@ export class AnswersComponent {
       title: 'Comfort & Vibes',
       icon: 'self_improvement',
       fields: [
-        { label: 'Cozy Night In or out', key: 'cozyOrOut' },
-        { label: 'Coffee or tea', key: 'coffeeOrTea' },
-        { label: 'Morning or night', key: 'morningOrNight' },
-        { label: 'Scent', key: 'favoriteScent' },
-        { label: 'Season', key: 'favoriteSeason' },
+        { key: 'cozyOrOut', label: 'Cozy night in or going out?' },
+        { key: 'coffeeOrTea', label: 'Coffee or tea?' },
+        { key: 'morningOrNight', label: 'Morning person or night owl?' },
+        { key: 'favoriteScent', label: 'Favorite scent' },
+        { key: 'favoriteSeason', label: 'Favorite season' },
       ],
     },
     {
@@ -87,105 +71,99 @@ export class AnswersComponent {
       title: 'Style & Aesthetic',
       icon: 'style',
       fields: [
-        { label: 'Go-to outfit', key: 'goToOutfit' },
-        { label: 'Accessory', key: 'favoriteAccessory' },
-        { label: 'Store / brand', key: 'favoriteStore' },
-        { label: 'Casual or dressy', key: 'casualOrDressy' },
-        { label: 'Favorite emoji', key: 'favoriteEmoji' },
+        { key: 'goToOutfit', label: 'Go-to outfit' },
+        { key: 'favoriteAccessory', label: 'Favorite accessory' },
+        { key: 'favoriteStore', label: 'Favorite store / brand' },
+        { key: 'casualOrDressy', label: 'Casual or dressy?' },
+        { key: 'favoriteEmoji', label: 'Favorite emoji' },
       ],
     },
     {
       id: 'random',
       title: 'Random',
-      icon: 'emoji_nature',
+      icon: 'auto_awesome',
       fields: [
-        { label: 'Animal', key: 'favoriteAnimal' },
-        { label: 'Quote', key: 'favoriteQuote' },
-        { label: 'Small joy', key: 'smallJoy' },
-        { label: 'Need more of', key: 'needMoreOf' },
-        { label: 'Dream gift', key: 'dreamGift' },
+        { key: 'introvertOrExtrovert', label: 'Introvert or extrovert?' },
+        { key: 'favoriteCartoonCharacter', label: 'Favorite cartoon/anime character' },
+        { key: 'favoriteCartoonShow', label: 'Favorite cartoon/anime show' },
+        { key: 'favoriteVacationSpot', label: 'Dream vacation destination' },
+        { key: 'personalityIn3Words', label: 'Personality in 3 words' },
+        { key: 'currentlyLearning', label: 'Currently learning' },
+        { key: 'favoriteSong', label: 'Favorite song' },
+        { key: 'favoriteQuote', label: 'Favorite quote' },
+        { key: 'smallJoy', label: 'Small thing that makes you happy' },
+        { key: 'needMoreOf', label: 'Always need more of' },
+        { key: 'dreamGift', label: 'Dream gift' },
       ],
     },
   ];
 
-  constructor(private participantsService: ParticipantsService) {}
+  constructor(private participantsService: ParticipantsService) {
+    // iOS/Safari: allow sound on user gesture
+    this.flipAudio.volume = 0.6;
+  }
 
   async search() {
+    const n = (this.name || '').toString().trim();
+    if (!n) return;
+
     this.loading = true;
     this.notFound = false;
     this.data = null;
-    this.openSections.clear();
 
-    const result = await this.participantsService.getParticipantByName(this.name);
+    try {
+      // ✅ case-insensitive now because service uses nameLower
+      const result = await this.participantsService.getParticipantByName(n);
 
-    if (!result) {
+      if (!result) {
+        this.notFound = true;
+        return;
+      }
+
+      this.data = result;
+
+      // reset flip states
+      this.flipped = {};
+      for (const s of this.sections) this.flipped[s.id] = false;
+
+      // log view
+      await this.participantsService.logView(this.data.name || n);
+    } catch (e) {
+      console.error(e);
       this.notFound = true;
+    } finally {
       this.loading = false;
-      return;
-    }
-
-    this.data = result;
-    this.loading = false;
-  }
-
-  sectionHasAny(sectionId: SectionKey): boolean {
-    const section = this.sections.find((s) => s.id === sectionId);
-    if (!section || !this.data) return false;
-
-    return section.fields.some((f) => {
-      const v = (this.data?.[f.key] ?? '').toString().trim();
-      return v.length > 0;
-    });
-  }
-
-  filledCount(sectionId: SectionKey): number {
-    const section = this.sections.find((s) => s.id === sectionId);
-    if (!section || !this.data) return 0;
-
-    return section.fields.reduce((acc, f) => {
-      const v = (this.data?.[f.key] ?? '').toString().trim();
-      return acc + (v.length > 0 ? 1 : 0);
-    }, 0);
-  }
-
-  isFlipped(sectionId: SectionKey): boolean {
-    return this.openSections.has(sectionId);
-  }
-
-  toggleSection(sectionId: SectionKey) {
-    this.playFlipSound();
-
-    if (this.openSections.has(sectionId)) {
-      this.openSections.delete(sectionId);
-    } else {
-      this.openSections.add(sectionId);
     }
   }
 
   private playFlipSound() {
     try {
-      if (!this.audioCtx) {
-        this.audioCtx = new (window.AudioContext ||
-          (window as any).webkitAudioContext)();
-      }
+      this.flipAudio.currentTime = 0;
+      void this.flipAudio.play();
+    } catch {}
+  }
 
-      const ctx = this.audioCtx;
-      const now = ctx.currentTime;
+  toggleSection(id: string) {
+    this.flipped[id] = !this.flipped[id];
+    this.playFlipSound();
+  }
 
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+  isFlipped(id: string) {
+    return !!this.flipped[id];
+  }
 
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(520, now);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.05, now + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+  sectionHasAny(id: string): boolean {
+    if (!this.data) return false;
+    const sec = this.sections.find(s => s.id === id);
+    if (!sec) return false;
+    return sec.fields.some(f => ((this.data?.[f.key] ?? '').toString().trim().length > 0));
+  }
 
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.07);
-    } catch {
-      // ignore audio failures
-    }
+  filledCount(id: string): string {
+    if (!this.data) return '';
+    const sec = this.sections.find(s => s.id === id);
+    if (!sec) return '';
+    const filled = sec.fields.filter(f => (this.data?.[f.key] ?? '').toString().trim().length > 0).length;
+    return `${filled}/${sec.fields.length}`;
   }
 }

@@ -18,8 +18,11 @@ export class SubmitComponent {
   // swipe handling
   private startX: number | null = null;
 
-  // 90% rule
+  // unlock threshold per step
   threshold = 0.8;
+
+  // whether we loaded existing saved answers
+  loadedExisting = false;
 
   steps: { id: StepId; title: string; subtitle: string; icon: string; themeClass: string; keys: string[] }[] = [
     {
@@ -65,17 +68,26 @@ export class SubmitComponent {
     {
       id: 'random',
       title: 'Random',
-      subtitle: 'Fun extras ✨',
-      icon: 'emoji_nature',
+      subtitle: 'Get to know you ✨',
+      icon: 'auto_awesome',
       themeClass: 'theme-random',
-      keys: ['favoriteAnimal', 'favoriteQuote', 'smallJoy', 'needMoreOf', 'dreamGift'],
+      keys: [
+        'introvertOrExtrovert',
+        'favoriteCartoonCharacter',
+        'favoriteCartoonShow',
+        'favoriteVacationSpot',
+        'personalityIn3Words',
+        'currentlyLearning',
+        'favoriteSong',
+        'favoriteQuote',
+        'smallJoy',
+        'needMoreOf',
+        'dreamGift',
+      ],
     },
   ];
 
-  constructor(
-    private fb: FormBuilder,
-    private participantsService: ParticipantsService
-  ) {
+  constructor(private fb: FormBuilder, private participantsService: ParticipantsService) {
     this.form = this.fb.group({
       // Basics
       name: [''],
@@ -113,19 +125,59 @@ export class SubmitComponent {
       favoriteEmoji: [''],
 
       // Random
-      favoriteAnimal: [''],
+      introvertOrExtrovert: [''],
+      favoriteCartoonCharacter: [''],
+      favoriteCartoonShow: [''],
+      favoriteVacationSpot: [''],
+      personalityIn3Words: [''],
+      currentlyLearning: [''],
+      favoriteSong: [''],
       favoriteQuote: [''],
       smallJoy: [''],
       needMoreOf: [''],
       dreamGift: [''],
     });
+
+    // ✅ Prefill automatically for the signed-in user (doc id = email)
+    this.loadExisting();
   }
 
   get currentStep() {
     return this.steps[this.stepIndex];
   }
 
-  /** count how many fields are filled in current step */
+  /** load existing saved answers for the logged-in user */
+  async loadExisting() {
+    try {
+      const existing = await this.participantsService.getMyParticipant();
+      if (existing) {
+        this.form.patchValue(existing, { emitEvent: false });
+        this.loadedExisting = true;
+      } else {
+        this.loadedExisting = false;
+      }
+    } catch (e) {
+      console.error(e);
+      this.loadedExisting = false;
+    }
+  }
+
+  /** All keys across all steps (unique) */
+  allKeys(): string[] {
+    const flat: string[] = [];
+    for (const s of this.steps) flat.push(...s.keys);
+    return Array.from(new Set(flat));
+  }
+
+  /** Overall progress (0..100) for top bar */
+  overallProgress(): number {
+    const keys = this.allKeys();
+    const total = keys.length || 1;
+    const filled = this.filledCount(keys);
+    return Math.round((filled / total) * 100);
+  }
+
+  /** count filled fields in given keys */
   filledCount(keys: string[]): number {
     const v = this.form.value;
     return keys.reduce((acc, k) => {
@@ -133,19 +185,17 @@ export class SubmitComponent {
       return acc + (val.length > 0 ? 1 : 0);
     }, 0);
   }
+
   totalCount(keys: string[]): number {
-  return keys.length;
-}
+    return keys.length;
+  }
 
-
-  /** minimum required to pass 90% (round UP) */
   requiredCount(keys: string[]): number {
     return Math.ceil(keys.length * this.threshold);
   }
 
-  /** Next allowed when filled >= required */
+  /** Next/save allowed when name present AND >=80% of current step filled */
   canGoNext(): boolean {
-    // Always require NAME to be filled (even if 90% would pass)
     const nameOk = (this.form.value.name ?? '').toString().trim().length > 0;
     if (!nameOk) return false;
 
@@ -162,6 +212,13 @@ export class SubmitComponent {
     if (this.stepIndex > 0) this.stepIndex--;
   }
 
+  /** Jump to any section */
+  goToStep(i: number) {
+    if (i < 0 || i >= this.steps.length) return;
+    this.stepIndex = i;
+  }
+
+  /** Save changes (MERGE) — available on every step */
   async save() {
     if (!this.canGoNext()) return;
 
@@ -174,7 +231,8 @@ export class SubmitComponent {
 
     try {
       this.loading = true;
-      await this.participantsService.saveParticipant(name, this.form.value);
+      await this.participantsService.saveMyParticipant(this.form.value);
+      this.loadedExisting = true;
       alert('Saved successfully 🎉');
     } catch (e) {
       console.error(e);
@@ -184,7 +242,7 @@ export class SubmitComponent {
     }
   }
 
-  // --- Swipe support obeys same rule ---
+  // --- Swipe support ---
   onTouchStart(ev: TouchEvent) {
     this.startX = ev.touches?.[0]?.clientX ?? null;
   }
@@ -199,5 +257,12 @@ export class SubmitComponent {
 
     if (dx < 0) this.next();
     else this.back();
+  }
+
+  /** Enter key: go next if possible; if last step, save */
+  onEnterKey(ev: Event) {
+    ev.preventDefault();
+    if (this.stepIndex < this.steps.length - 1) this.next();
+    else this.save();
   }
 }
