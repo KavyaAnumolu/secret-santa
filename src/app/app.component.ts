@@ -30,20 +30,14 @@ export class AppComponent implements OnInit {
   }
 
   async login() {
-    try {
-      await this.auth.loginWithGoogle();
-
-      // If popup succeeded, we can navigate right away
-      const user = await firstValueFrom(this.auth.user$);
-      if (user) {
-        await this.router.navigateByUrl('/submit');
-      }
-      // If redirect is used, navigation will happen after redirect returns
-    } catch (e: any) {
-      console.error(e);
-      alert(e?.message || 'Login failed');
-    }
+  try {
+    await this.auth.loginWithGoogle();
+    const user = await firstValueFrom(this.auth.user$);
+    if (user) await this.router.navigateByUrl('/submit');
+  } catch (e: any) {
+    alert(e?.message || 'Login failed');
   }
+}
 
   async logout() {
     await this.auth.logout();
